@@ -1,0 +1,18 @@
+#summary Installation of the userscript.
+
+= Introduction =
+
+This script is only tested with Opera 9.10.
+
+
+= Details =
+
+  # Download the script from the SVN trunk (the Source tab).
+  # Move the script file to a directory of your choice, for example in the path of your Opera installation (eg: C:\Program Files\Opera\UserJS).
+  # Open the Opera settings (menu Extra -> Preferences).
+  # Go to the tab Advanced.
+  # Select the Contents section.
+  # Click the button Javascript Options.
+  # At the bottom of the new window, select the path where you moved the script file to, and click Ok.
+  # Make sure that using javascript is enabled.
+  # Play Inselkampf, you'll notice the changes immediately.
