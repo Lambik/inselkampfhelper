@@ -98,7 +98,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var items = new Array();
 			var durs = new Array();
 			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
-				var a = oElement.innerText.match(/\s+((?:\w|\s|-)+)(?: \(Level \d+\))?(?:\r\n|\r|\n).*Gold:\s+(\d+)\s+Stone:\s+(\d+)\s+Lumber:\s+(\d+)\s+Duration:\s+(\d+:\d+:\d+)/i);
+				var a = oElement.innerText.match(/\s*((?:\w|\s|-)+)(?: \(Level \d+\))?(?:\r\n|\r|\n).*Gold:\s+(\d+)\s+Stone:\s+(\d+)\s+Lumber:\s+(\d+)\s+Duration:\s+(\d+:\d+:\d+)/i);
 
 				if (a) {
 					golds[golds.length] = a[2];
