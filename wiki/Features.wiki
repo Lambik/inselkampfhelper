@@ -1,0 +1,13 @@
+#summary All features of the script.
+
+= Features =
+  * All countdown clocks show full time (xx days, xx hours, xx minutes, xx seconds)
+  * Build and Research pages show you time until you can do the next upgrade (if it doesn't know the mine level, it assumes 20 for all and shows that)
+  * For some things like storehouse and mines, it shows you what the next limit will be
+  * Shows on build page when storehouse will be full (assuming storehouse can still be upgraded)
+  * Training page: shows total duration of all orders
+  * Training page: shows needed resources to train xx units, and tells you how long you have to wait until you have those resources (assuming mines level 20)
+  * Island details page: adds a button to the Calculator page to easily calculate the distance to that island
+
+= TODO =
+  * show information in the main page about storehouse
