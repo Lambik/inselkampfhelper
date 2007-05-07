@@ -158,6 +158,32 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							}
 						}
 					}
+					
+					else if (rows[0].children[0].innerText == 'Members') { // alliance, members page
+						// make a list with all members in mailable format at bottom
+						// - collect in array
+						// - divide in pieces of 50
+						// - add mail-button per segment
+						var allmembers = new Array();
+						for (var r = 2; r < rows.length; ++r) { // 2 to skip 'Members' and 'Player' rows
+							allmembers.push(rows[r].children[0].innerText.split(' ')[0]);
+						}
+						
+						var newDiv = document.createElement('div');
+						newDiv.id = 'membersinfo';
+						
+						var msg = '<h3>' + allmembers.length + ' members</h3>';
+						msg += '<table><tr><td width="10"></td><td><b>Members</b></td></tr>';
+						for (var i = 0, sc = 1; i < allmembers.length; i += 50, ++sc) {
+							var segment = allmembers.slice(i, i+50);
+							msg += "<tr><td>" + sc + "</td><td>" + segment.join(' ; ') + "</td></tr>";
+						}
+						
+						msg += '</table>';
+		
+						newDiv.innerHTML = msg;
+						document.body.appendChild(newDiv);
+					}
 				}
 			}
 
