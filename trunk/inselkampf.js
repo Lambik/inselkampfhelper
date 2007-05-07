@@ -298,6 +298,19 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 					};
 				}
+				else if (oElement.type == 'text' && oElement.name == 'form[pos1]') {
+					// harbour, entering coords
+					// when pasting something similar to coords in the first box, this will distribute them over the other two boxes automatically
+					oElement.onkeyup = function () {
+						var a = this.value.match(/(\d+):(\d+):(\d+)/);
+						if (a) {
+							this.form.elements[0].value = a[1];
+							this.form.elements[1].value = a[2];
+							this.form.elements[2].value = a[3];
+						}
+					}
+				}
+
 			}
 			
 
