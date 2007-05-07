@@ -72,6 +72,27 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var goldprod, stoneprod, woodprod;
 			var minesunknown = false;
 			
+			
+			// http://4umi.com/web/javascript/array.htm
+			// Array.indexOf( value, begin, strict ) - Return index of the first element that matches value
+			Array.prototype.indexOf = function( v, b, s ) {
+				for( var i = +b || 0, l = this.length; i < l; i++ ) {
+					if( this[i]===v || s && this[i]==v ) { return i; }
+				}
+				return -1;
+			};
+			
+			// Array.unique( strict ) - Remove duplicate values
+			Array.prototype.unique = function( b ) {
+				var a = [], i, l = this.length;
+				for(i=0; i < l; ++i) {
+					if (a.indexOf(this[i], 0, b) < 0) { a.push(this[i]); }
+				}
+				return a;
+			};
+			
+			
+			
 			var clocks = new Array();
 			for( var i = 0, oElement; oElement = document.scripts[i]; i++ ) {
 				// deze regexp werkt niet global! maar als ik g vlag bijvoeg, wil het helemaal niet meer matchen.
@@ -137,6 +158,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				// TODO: op "transport" pagina van haven tonen wat max limiet is (units) van schepen gecombineerd, zodat je het weet. Dat is nogal handig
 				
 				else {
+					//TODO: als mijn nog nooit gebouwd is, staat ze wel in lijst, maar zonder (level ..)!
 					var a = oElement.innerText.match(/(.+) \(Level (\d+)\)/);
 					if (a) {
 						if (a[1].indexOf("Gold Mine") > 0) {
@@ -293,6 +315,69 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				
 			}
 			
+			var bolds = document.getElementsByTagName('b');
+			for( var i = 0, oElement; oElement = bolds[i]; i++ ) {
+				var a = oElement.innerText.match(/^Amount delivered per hour: (\d+) units$/);
+				if (a) {
+					oElement.innerHTML += "<br>Amount delivered per day: " + (parseInt(a[1]) * 24) + " units";
+				}
+			}
+			
+			
+			// append info to map page
+			var areas = document.getElementById('map');
+			if (areas) {
+				areas = areas.children;
+			
+				var alliances = new Array();
+				var unruled = new Array();
+				
+				for (var i = 0; i < areas.length; ++i) {
+					// var temparr = areas[i].title.split('\n');	// werkt in IE, niet in opera
+					// attention! this regular expression will be fooled if someone names his island funny!
+					var a = areas[i].title.match(/Island: (.*?)Position: (\d+:\d+:\d+)(?:Ruler: (.*?))?(?:Alliance: (\[\S+\]))?Score: (\d+)/);
+					// a[0] = alles
+					// a[1] = island name
+					// a[2] = position
+					// a[3] = ruler name
+					// a[4] = alliance name
+					// a[5] = score
+					if (a) {
+						//	alert(areas[i].title + '\n\n' + a.length);
+					
+						if (!a[3]) { // als geen ruler, dan is het rulerless
+							var msg = '<a href="' + areas[i].href + '">' + a[2] + "</a>";
+							if (a[5] != 1) { msg += ' (' + a[5] + ')'; } // score
+							unruled.push(msg);
+						}
+						else {
+							var alli = (a[4]?a[4]:'None');
+							if (!alliances[alli]) { alliances[alli] = new Array(); };
+							alliances[alli].push(a[3]); // ruler name
+						}
+					
+						//	document.writeln(a.join(' ooga ') + "<br>");
+					}
+				}
+				
+				var newDiv = document.createElement('div');
+				newDiv.id = 'mapinfo';
+				
+				var msg = '<h3>' + areas.length + ' islands</h3>';
+				msg += '<table><tr><td><b>Alliance</b></td><td><b>Members</b></td><td><b># Islands</b></td></tr>';
+				
+				for (var alliance in alliances) {
+					if (typeof alliances[alliance] != 'function') { // om de prototypes niet te hebben, christus!
+						msg += '<tr><td>' + alliance + '</td><td>' + alliances[alliance].unique().join(' ; ') + '</td><td>' + alliances[alliance].length + '</td></tr>';
+					}
+				}
+				
+				msg += '</table>';
+				msg += '<br><b>Unruled islands:</b> ' + unruled.join(', ');
+
+				newDiv.innerHTML = msg;
+				document.body.appendChild(newDiv);
+			}
 			
 			// start some clocks
 			if (startStoreClock) {
@@ -308,6 +393,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			// clean-up
 			cells = null;
 			divs = null;
+			bolds = null;
 		},
 		false
 	);
