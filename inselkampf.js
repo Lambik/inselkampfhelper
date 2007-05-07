@@ -94,7 +94,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			
 			var clocks = new Array();
-			for( var i = 0, oElement; oElement = document.scripts[i]; i++ ) {
+			for( var i = 0, oElement; oElement = document.scripts[i]; ++i ) {
 				// deze regexp werkt niet global! maar als ik g vlag bijvoeg, wil het helemaal niet meer matchen.
 				// ik schuif schuld op opera.
 				var a = oElement.innerText.match(/new Clock\(\s*\w+,\s*e\(\s*'(\S+)'\s*\),\s*(\d+)\s*\);/i);
@@ -105,37 +105,45 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 			// add a row with totals
 			var tables = document.getElementsByTagName('table');
-			if (tables[1] && tables[1].className == 'table') { // list page, alliance pages, random island page
-				var rows = tables[1].getElementsByTagName('tr');
-				var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
-				if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
-					var cells2sum;
-					if (numcells == 6) {
-						cells2sum = [1, 2, 3];  // starting at 0 of course
-					}
-					else {
-						cells2sum = [1, 2];
-					}
-					
-					var totalsisles = new Array();
-					for (var k = 0; k < cells2sum.length; ++k) { // boring init
-						totalsisles[k] = 0;
-					}
-					for (var r = 1; r < rows.length; ++r) {
-						var cells = rows[r].children;
-						for (var k = 0; k < cells2sum.length; ++k) {
-							totalsisles[k] += parseInt(cells[cells2sum[k]].innerText);
+			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
+				if (tables[i].className == 'table') { // list page, alliance pages, random island page
+					var rows = tables[i].getElementsByTagName('tr');
+					var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
+					if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
+						var cells2sum;
+						if (numcells == 6) {
+							cells2sum = [1, 2, 3];  // starting at 0 of course
+						}
+						else {
+							cells2sum = [1, 2];
+						}
+						
+						var totalsisles = new Array();
+						for (var k = 0; k < cells2sum.length; ++k) { // boring init
+							totalsisles[k] = 0;
+						}
+						for (var r = 1; r < rows.length; ++r) {
+							var cells = rows[r].children;
+							for (var k = 0; k < cells2sum.length; ++k) {
+								totalsisles[k] += parseInt(cells[cells2sum[k]].innerText);
+							}
+						}
+						
+						var newtfoot = tables[i].createTFoot(); //Create new tfoot
+						var newtfootrow = newtfoot.insertRow(0); //Define a new row for the tfoot
+						newtfootrow.insertCell(0).innerHTML = "Totals"; //Define a new cell for the tfoot's row
+						for (var r = 0; r < totalsisles.length; ++r) {
+							newtfootrow.insertCell(r+1).innerHTML = totalsisles[r];
+						}
+						for (var r = totalsisles.length + 1; r < numcells; ++r) {
+							newtfootrow.insertCell(r); // visual appearance
 						}
 					}
-					
-					var newtfoot = tables[1].createTFoot(); //Create new tfoot
-					var newtfootrow = newtfoot.insertRow(0); //Define a new row for the tfoot
-					newtfootrow.insertCell(0).innerHTML = "Totals"; //Define a new cell for the tfoot's row
-					for (var r = 0; r < totalsisles.length; ++r) {
-						newtfootrow.insertCell(r+1).innerHTML = totalsisles[r];
-					}
-					for (var r = totalsisles.length + 1; r < numcells; ++r) {
-						newtfootrow.insertCell(r); // visual appearance
+					else if (rows[0].children[0].innerText == 'New order') { // harbour page, orders
+						// preparation to show how much units and resources you can ship
+						var newrow = tables[i].insertRow(rows.length - 1);
+						newrow.insertCell(0).innerHTML = "Units: <span id='orders_units'>0</span> Resources: <span id='orders_res'>0</span>";
+						newrow.insertCell(1); // visuals
 					}
 				}
 			}
@@ -192,7 +200,6 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					}
 					
 				}
-				// TODO: op "transport" pagina van haven tonen wat max limiet is (units) van schepen gecombineerd, zodat je het weet. Dat is nogal handig
 				
 				else {
 					//TODO: als mijn nog nooit gebouwd is, staat ze wel in lijst, maar zonder (level ..)!
@@ -263,53 +270,77 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 			var inputs = document.getElementsByTagName('input');
 			
-			for (var i = 0, oElement; oElement = inputs[i]; i++) {
+			for (var i = 0, oElement; oElement = inputs[i]; ++i) {
 				//alert(oElement.type);
-				if (oElement.type == 'text' && oElement.name == 'number') {
-					oElement.id = (i / 2) + 'input';
-					theCell = cells[(3 + (i * 1.5))];
-					theCell.innerHTML += "<b>Needed:</b> Gold: <span id='" + (i/2) + "gold' style='color: green'>0</span> Stone: <span id='" + (i/2) + "stone' style='color: green'>0</span> Lumber: <span id='" + (i/2) + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + (i/2) + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + (i/2) + "needed'>-</span>";
-					
-					oElement.onkeyup = function() {
-						var r = parseInt(this.id);
-						document.getElementById(r + 'gold').innerText = this.value * golds[r];
-						if (gold < this.value * golds[r]) { document.getElementById(r + 'gold').style.color = 'red'; } else { document.getElementById(r + 'gold').style.color = 'green'; }
-						document.getElementById(r + 'stone').innerText = this.value * stones[r];
-						if (stone < this.value * stones[r]) { document.getElementById(r + 'stone').style.color = 'red'; } else { document.getElementById(r + 'stone').style.color = 'green'; }
-						document.getElementById(r + 'wood').innerText = this.value * woods[r];
-						if (wood < this.value * woods[r]) { document.getElementById(r + 'wood').style.color = 'red'; } else { document.getElementById(r + 'wood').style.color = 'green'; }
+				if (oElement.type == 'text') {
+					if (oElement.name == 'number') {
+						oElement.id = (i / 2) + 'input';
+						theCell = cells[(3 + (i * 1.5))];
+						theCell.innerHTML += "<b>Needed:</b> Gold: <span id='" + (i/2) + "gold' style='color: green'>0</span> Stone: <span id='" + (i/2) + "stone' style='color: green'>0</span> Lumber: <span id='" + (i/2) + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + (i/2) + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + (i/2) + "needed'>-</span>";
 						
-						var mydur = this.value * durs[items[r] + 's'];
-						mydur = (mydur == 0 ? '-' : (DateHelper.getDuration(mydur) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + mydur * 1000 ) + ')'));
-						document.getElementById(r + 'dur').innerHTML = mydur;
-						
-						var goldwait = ((this.value * golds[r]) - gold) * 3600 / goldprod;
-						var stonewait = ((this.value * stones[r]) - stone) * 3600 / stoneprod;
-						var woodwait = ((this.value * woods[r]) - wood) * 3600 / woodprod;
-						var longestwait = Math.round(Math.max(goldwait, stonewait, woodwait));
-						// var myclock = null;
-						var myneeded = '-';
-						if (longestwait > 0) {
-							// TODO: clock hieronder werkt wel, maar je kan ze niet weg krijgen!
-							// oplossing: wegdoen van lijst observers, maar nogal moeilijk ;-)
-							// myclock = new Clock( timer, document.getElementById(r + 'needed'), longestwait );
+						oElement.onkeyup = function() {
+							var r = parseInt(this.id);
+							document.getElementById(r + 'gold').innerText = this.value * golds[r];
+							if (gold < this.value * golds[r]) { document.getElementById(r + 'gold').style.color = 'red'; } else { document.getElementById(r + 'gold').style.color = 'green'; }
+							document.getElementById(r + 'stone').innerText = this.value * stones[r];
+							if (stone < this.value * stones[r]) { document.getElementById(r + 'stone').style.color = 'red'; } else { document.getElementById(r + 'stone').style.color = 'green'; }
+							document.getElementById(r + 'wood').innerText = this.value * woods[r];
+							if (wood < this.value * woods[r]) { document.getElementById(r + 'wood').style.color = 'red'; } else { document.getElementById(r + 'wood').style.color = 'green'; }
 							
-							myneeded = DateHelper.getDuration(longestwait) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + longestwait * 1000 ) + ')';
+							var mydur = this.value * durs[items[r] + 's'];
+							mydur = (mydur == 0 ? '-' : (DateHelper.getDuration(mydur) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + mydur * 1000 ) + ')'));
+							document.getElementById(r + 'dur').innerHTML = mydur;
+							
+							var goldwait = ((this.value * golds[r]) - gold) * 3600 / goldprod;
+							var stonewait = ((this.value * stones[r]) - stone) * 3600 / stoneprod;
+							var woodwait = ((this.value * woods[r]) - wood) * 3600 / woodprod;
+							var longestwait = Math.round(Math.max(goldwait, stonewait, woodwait));
+							// var myclock = null;
+							var myneeded = '-';
+							if (longestwait > 0) {
+								// TODO: clock hieronder werkt wel, maar je kan ze niet weg krijgen!
+								// oplossing: wegdoen van lijst observers, maar nogal moeilijk ;-)
+								// myclock = new Clock( timer, document.getElementById(r + 'needed'), longestwait );
+								
+								myneeded = DateHelper.getDuration(longestwait) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + longestwait * 1000 ) + ')';
+							}
+							document.getElementById(r + 'needed').innerHTML = myneeded;
+	
+						};
+					}
+					else if (oElement.name == 'form[pos1]') {
+						// harbour, entering coords
+						// when pasting something similar to coords in the first box, this will distribute them over the other two boxes automatically
+						oElement.onkeyup = function () {
+							var a = this.value.match(/(\d+):(\d+):(\d+)/);
+							if (a) {
+								this.form.elements[0].value = a[1];
+								this.form.elements[1].value = a[2];
+								this.form.elements[2].value = a[3];
+							}
 						}
-						document.getElementById(r + 'needed').innerHTML = myneeded;
-
-					};
-				}
-				else if (oElement.type == 'text' && oElement.name == 'form[pos1]') {
-					// harbour, entering coords
-					// when pasting something similar to coords in the first box, this will distribute them over the other two boxes automatically
-					oElement.onkeyup = function () {
-						var a = this.value.match(/(\d+):(\d+):(\d+)/);
-						if (a) {
-							this.form.elements[0].value = a[1];
-							this.form.elements[1].value = a[2];
-							this.form.elements[2].value = a[3];
-						}
+					}
+					
+					// update the unit and resources count
+					else if (oElement.name == 'form[s1]') { //LWS
+						oElement.title = '5 units';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[s2]') { //LMS
+						oElement.title = '500 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[s3]') { //SWS
+						oElement.title = '2 units';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[s4]') { //SMS
+						oElement.title = '200 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[s5]') { //Colo
+						oElement.title = '5000 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
 					}
 				}
 
@@ -444,6 +475,26 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			cells = null;
 			divs = null;
 			bolds = null;
+			
+			//*************************//
+			// extra functions
+			//-------------------------//
+			
+			// update the Units and Resources count on the harbour page
+			function updateUnitsResources(form) {
+				var units = 0, resources = 0;
+				for (var i = 3; i < form.elements.length - 3; ++i) {
+					var whowhat = form.elements[i].title.split(' ');
+					if (whowhat[1] == 'units') {
+						units += parseInt(whowhat[0]) * form.elements[i].value;
+					}
+					else {
+						resources += parseInt(whowhat[0]) * form.elements[i].value;
+					}
+				}
+				document.getElementById('orders_units').innerText = units;
+				document.getElementById('orders_res').innerText = resources;
+			}
 		},
 		false
 	);
