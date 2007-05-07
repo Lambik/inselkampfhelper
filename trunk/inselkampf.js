@@ -103,7 +103,42 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				}
 			}
 
-			
+			// add a row with totals
+			var tables = document.getElementsByTagName('table');
+			if (tables[1] && tables[1].className == 'table') { // list page, alliance pages
+				var rows = tables[1].getElementsByTagName('tr');
+				if (rows[0].children[0].innerText == 'Island') { // list page only
+					var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet
+					var cells2sum;
+					if (numcells == 6) {
+						cells2sum = [1, 2, 3];  // starting at 0 of course
+					}
+					else {
+						cells2sum = [1, 2];
+					}
+					
+					var totalsisles = new Array();
+					for (var k = 0; k < cells2sum.length; ++k) { // boring init
+						totalsisles[k] = 0;
+					}
+					for (var r = 1; r < rows.length; ++r) {
+						var cells = rows[r].children;
+						for (var k = 0; k < cells2sum.length; ++k) {
+							totalsisles[k] += parseInt(cells[cells2sum[k]].innerText);
+						}
+					}
+					
+					var newtfoot = tables[1].createTFoot(); //Create new tfoot
+					var newtfootrow = newtfoot.insertRow(0); //Define a new row for the tfoot
+					newtfootrow.insertCell(0).innerHTML = "Totals"; //Define a new cell for the tfoot's row
+					for (var r = 0; r < totalsisles.length; ++r) {
+						newtfootrow.insertCell(r+1).innerHTML = totalsisles[r];
+					}
+					for (var r = totalsisles.length + 1; r < numcells; ++r) {
+						newtfootrow.insertCell(r); // visual appearance
+					}
+				}
+			}
 
 			var cells = document.getElementsByTagName('td');
 			
