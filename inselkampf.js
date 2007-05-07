@@ -103,12 +103,13 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				}
 			}
 
-			// add a row with totals
 			var tables = document.getElementsByTagName('table');
 			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
 				if (tables[i].className == 'table') { // list page, alliance pages, random island page
 					var rows = tables[i].getElementsByTagName('tr');
 					var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
+
+					// add a row with totals
 					if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
 						var cells2sum;
 						if (numcells == 6) {
@@ -139,11 +140,23 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							newtfootrow.insertCell(r); // visual appearance
 						}
 					}
+					
 					else if (rows[0].children[0].innerText == 'New order') { // harbour page, orders
 						// preparation to show how much units and resources you can ship
 						var newrow = tables[i].insertRow(rows.length - 1);
 						newrow.insertCell(0).innerHTML = "Units: <span id='orders_units'>0</span> Resources: <span id='orders_res'>0</span>";
 						newrow.insertCell(1); // visuals
+					}
+					
+					else if (rows[0].children[0].innerText == 'Transport' || rows[0].children[0].innerText == 'Attack' ) { // shipping orders
+						for (var r = 1; r < rows.length; ++r) {
+							if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>army (') == 0) {
+								rows[r].children[0].innerHTML += " (<span id='orders_units'>0</span>)";
+							}
+							else if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>resources (') == 0) {
+								rows[r].children[0].innerHTML += " (<span id='orders_res'>0</span>)";
+							}
+						}
 					}
 				}
 			}
@@ -342,6 +355,34 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						oElement.title = '5000 resources';
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
 					}
+					
+					// also on ordering page
+					// but it needs a few tricks ;-)
+					else if (oElement.name == 'form[u1]') { //stone thrower
+						oElement.title = '1 units';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[u2]') { //spearfighter
+						oElement.title = '1 units';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[u3]') { //archer
+						oElement.title = '1 units';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					// TODO: check catapults
+					else if (oElement.name == 'form[gold]') { //gold
+						oElement.title = '1 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[stones]') { //stone
+						oElement.title = '1 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
+					else if (oElement.name == 'form[wood]') { //lumber
+						oElement.title = '1 resources';
+						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+					}
 				}
 
 			}
@@ -483,17 +524,21 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			// update the Units and Resources count on the harbour page
 			function updateUnitsResources(form) {
 				var units = 0, resources = 0;
-				for (var i = 3; i < form.elements.length - 3; ++i) {
+				for (var i = 0; i < form.elements.length; ++i) {
 					var whowhat = form.elements[i].title.split(' ');
 					if (whowhat[1] == 'units') {
 						units += parseInt(whowhat[0]) * form.elements[i].value;
 					}
-					else {
+					else if (whowhat[1] == 'resources') {
 						resources += parseInt(whowhat[0]) * form.elements[i].value;
 					}
 				}
-				document.getElementById('orders_units').innerText = units;
-				document.getElementById('orders_res').innerText = resources;
+				if (document.getElementById('orders_units')) {
+					document.getElementById('orders_units').innerText = units;
+				}
+				if (document.getElementById('orders_res')) {
+					document.getElementById('orders_res').innerText = resources;
+				}
 			}
 		},
 		false
