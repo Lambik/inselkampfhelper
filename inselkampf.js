@@ -105,10 +105,10 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 			// add a row with totals
 			var tables = document.getElementsByTagName('table');
-			if (tables[1] && tables[1].className == 'table') { // list page, alliance pages
+			if (tables[1] && tables[1].className == 'table') { // list page, alliance pages, random island page
 				var rows = tables[1].getElementsByTagName('tr');
-				if (rows[0].children[0].innerText == 'Island') { // list page only
-					var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet
+				var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
+				if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
 					var cells2sum;
 					if (numcells == 6) {
 						cells2sum = [1, 2, 3];  // starting at 0 of course
@@ -187,8 +187,10 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				else if( oElement.innerHTML.indexOf("To here") > 0) {
 					var a = oElement.innerHTML.match(/'(.*index\.php\?s=.*)&p=b7&form\[pos1\]=(\d+)&form\[pos2\]=(\d+)&form\[pos3\]=(\d+)'/i);
 					if (a) {
+						oElement.innerHTML += "<form action='" + a[1] + "&p=map&zoom=&pos1=" + a[2] + "&pos2=" + a[3] + "' method='post'><input type='submit' value='On map'></form>";
 						oElement.innerHTML += "<form action='" + a[1] + "&p=calculator&sub=distance' method='post'><input type='hidden' value='" + a[2] + "' name='form[pos1]'><input type='hidden' value='" + a[3] + "' name='form[pos2]'><input type='hidden' value='" + a[4] + "' name='form[pos3]'><b>Distance and Arrival</b>, at <input type='text' value='5' name='form[speed]' size='2'> knots: <input type='submit' value='Calculate'></form>";
 					}
+					
 				}
 				// TODO: op "transport" pagina van haven tonen wat max limiet is (units) van schepen gecombineerd, zodat je het weet. Dat is nogal handig
 				
