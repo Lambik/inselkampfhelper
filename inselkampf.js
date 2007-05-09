@@ -319,6 +319,21 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			}
 			
 			
+			// overloop links, op main page zal je hopelijk storehouse vinden
+			if (document.location.href.indexOf('&p=main') > -1) {
+				for (var i = 0; i < document.links.length; ++i) {
+					if (document.links[i].href.indexOf('&p=b8') > -1) {
+						var storehouselevel = parseInt(document.links[i].text.match(/\(Level (\d+)\)$/)[1]);
+						var maxStorage = Math.floor(Math.pow(1.2, storehouselevel) * 1000);
+						document.getElementById('goldspan').innerText = ' / ' + maxStorage;
+						document.getElementById('stonespan').innerText = ' / ' + maxStorage;
+						document.getElementById('woodspan').innerText = ' / ' + maxStorage;
+						break;
+					}
+				}
+			}
+			
+			
 			// bij barracks en harbour:
 			// bij invoer van een waarde in een inputveld zal javascript starten dat waarde uit invoerveld neemt, samen met gold, stone, lumber, duration uit nog eens vorige td, en dat berekent hoeveel en hoe lang dit duurt om te bouwen, aangenomen dat er genoeg beschikbaar is
 			// bepaalde elementen zullen rood zijn als nog niet genoeg aanwezig is (goud bvb), andere groen (steen bvb)
