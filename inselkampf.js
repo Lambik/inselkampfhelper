@@ -92,7 +92,6 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			};
 			
 			
-			
 			var clocks = new Array();
 			for( var i = 0, oElement; oElement = document.scripts[i]; ++i ) {
 				// deze regexp werkt niet global! maar als ik g vlag bijvoeg, wil het helemaal niet meer matchen.
@@ -102,7 +101,26 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					clocks[a[1]] = parseInt(a[2]);
 				}
 			}
-
+			
+/*			//add titles to the images you might find
+			//does not have much use, Sven should have made it better!
+			var imtitles = new Array();
+			imtitles['gold.gif'] = 'Gold';
+			imtitles['stones.gif'] = 'Stone';
+			imtitles['wood.gif'] = 'Lumber';
+			
+			var imgs = document.images;
+			for (var im = 0; im < imgs.length; ++im) {
+				var imsrc = imgs[im].src;
+				var filestart = imsrc.lastIndexOf("/");
+				filestart = (filestart == -1? 0 : filestart + 1);
+				var filename = imsrc.substr(filestart);
+				if (imtitles[filename]) {
+					imgs[im].title = imtitles[filename];
+				}
+			}
+*/			
+			
 			var tables = document.getElementsByTagName('table');
 			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
 				if (tables[i].className == 'table') { // list page, alliance pages, random island page
@@ -124,9 +142,8 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							totalsisles[k] = 0;
 						}
 						for (var r = 1; r < rows.length; ++r) {
-							var cells = rows[r].children;
 							for (var k = 0; k < cells2sum.length; ++k) {
-								totalsisles[k] += parseInt(cells[cells2sum[k]].innerText);
+								totalsisles[k] += parseInt(rows[r].children[cells2sum[k]].innerText);
 							}
 						}
 						
@@ -463,11 +480,58 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				
 			}
 			
+			
 			var bolds = document.getElementsByTagName('b');
 			for( var i = 0, oElement; oElement = bolds[i]; i++ ) {
+				var buildingaction = '';
 				var a = oElement.innerText.match(/^Amount delivered per hour: (\d+) units$/);
-				if (a) {
+				if (a) { // mines
+					// info per day
 					oElement.innerHTML += "<br>Amount delivered per day: " + (parseInt(a[1]) * 24) + " units";
+					buildingaction = 'Produces';
+				}
+				else {
+					a = oElement.innerText.match(/^Capacity per resource: (\d+) units/); // storehouse
+					if (a) { buildingaction = 'Stores'; }
+					else {
+						a = oElement.innerText.match(/^Offense level: (\d+)/); // stone wall
+						if (a) { buildingaction = 'Off/Defence'; }
+						else {
+							a = oElement.innerText.match(/^Visibility: (\d+,?\d*) nautical miles$/); // watch-tower
+							if (a) { buildingaction = 'Sees'; a[1] = a[1].replace(/,/, '.'); }
+						}
+					}
+				}
+				
+				if (buildingaction) {
+					var buildinfo = new Array(); // array with build factors, floor(factor*1.2^level)
+					// Production rate, factor, Gold, Stone, Lumber
+					buildinfo['goldmine'] = [8, 1.2, 75, 50, 50];
+					buildinfo['stonequarry'] = [5, 1.2, 50, 50, 50];
+					buildinfo['lumbermill'] = [6, 1.2, 75, (175/3), 50];
+					buildinfo['storehouse'] = [1000, 1.2, 75, 50, 75];
+					buildinfo['stonewall'] = [50, 1.25, (250/3), 125, 150];
+					buildinfo['watch-tower'] = [1, 1.2, 25, 75, (125/3)];
+					
+					var thisbuilding = bolds[i-1].innerText.toLowerCase().replace(/\s/g, '');
+					var currlevel = Math.round(Math.log(parseFloat(a[1]) / buildinfo[thisbuilding][0]) / Math.log(buildinfo[thisbuilding][1]));
+					bolds[i-1].innerHTML += ' (Level ' + currlevel + ')';
+					
+					// now add some more useful info, like building costs for next levels
+					var theDIV = document.createElement('div');
+					var msg = '<table class="table"><caption>Building costs</caption><tr><td><b>Level</b></td><td><b>Gold</b></td><td><b>Stone</b></td><td><b>Lumber</b></td><td><b>' + buildingaction + '</b></tr>';
+					
+					for (var cl = currlevel + 1; cl <= 20; ++cl) {
+						msg += '<tr><td>' + cl + '</td><td>' + Math.floor(buildinfo[thisbuilding][2] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][3] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][4] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][0] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td></tr>';
+					}
+					
+					msg += '</table>';
+					theDIV.innerHTML = msg;
+					if (currlevel < 20) {
+						oElement.parentNode.appendChild(document.createElement('br'));
+						oElement.parentNode.appendChild(document.createElement('br'));
+						oElement.parentNode.appendChild(theDIV);
+					}
 				}
 			}
 			
