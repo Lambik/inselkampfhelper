@@ -352,10 +352,16 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					if (oElement.name == 'number') {
 						oElement.id = (i / 2) + 'input';
 						theCell = cells[(3 + (i * 1.5))];
-						theCell.innerHTML += "<b>Needed:</b> Gold: <span id='" + (i/2) + "gold' style='color: green'>0</span> Stone: <span id='" + (i/2) + "stone' style='color: green'>0</span> Lumber: <span id='" + (i/2) + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + (i/2) + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + (i/2) + "needed'>-</span>";
+						theCell.innerHTML += "<div id='" + (i/2) + "info' style='display: none'><b>Needed:</b> Gold: <span id='" + (i/2) + "gold' style='color: green'>0</span> Stone: <span id='" + (i/2) + "stone' style='color: green'>0</span> Lumber: <span id='" + (i/2) + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + (i/2) + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + (i/2) + "needed'>-</span></div>";
 						
 						oElement.onkeyup = function() {
 							var r = parseInt(this.id);
+							if (this.value == 0) {
+								hideElement(r + 'info');
+							}
+							else {
+								showElement(r + 'info');
+							}
 							document.getElementById(r + 'gold').innerText = this.value * golds[r];
 							if (gold < this.value * golds[r]) { document.getElementById(r + 'gold').style.color = 'red'; } else { document.getElementById(r + 'gold').style.color = 'green'; }
 							document.getElementById(r + 'stone').innerText = this.value * stones[r];
@@ -649,6 +655,14 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				if (document.getElementById('orders_res')) {
 					document.getElementById('orders_res').innerText = resources;
 				}
+			}
+			
+			function showElement(name) {
+				document.getElementById(name).style.display = 'block';
+			}
+			
+			function hideElement(name) {
+				document.getElementById(name).style.display = 'none';
 			}
 		},
 		false
