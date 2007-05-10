@@ -239,9 +239,6 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			// go over again and add new info
 			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
 			
-				// TODO: deze cellen ook uitbreiden met info, maar enkel op de main pagina waar je mijnenlevels en ook storehouse level hebt.
-				// TODO 2: als mijnen of storehouse niet gebouwd zijn, toch iets tonen (main house zal ook wel beperkingen hebben, 1000 of zo)
-
 				if( oElement.innerHTML.indexOf("gold.gif") > 0 ) {
 					gold = parseInt(oElement.innerText);
 					oElement.innerHTML += "<span id='goldspan'></span>";
@@ -264,9 +261,10 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				}
 				
 				else {
-					//TODO: als mijn nog nooit gebouwd is, staat ze wel in lijst, maar zonder (level ..)!
-					var a = oElement.innerText.match(/(.+) \(Level (\d+)\)/);
+				//	var a = oElement.innerText.match(/(.+) \(Level (\d+)\)/);
+					var a = oElement.innerText.match(/(\w+(?: \w+)?)(?: \(Level (\d+)\))?/);
 					if (a) {
+						if (!a[2]) a[2] = 0;
 						if (a[1].indexOf("Gold Mine") > 0) {
 							goldprod = Math.floor(8 * Math.pow(1.2, parseInt(a[2])));
 							oElement.innerHTML = oElement.innerHTML.replace(/(\(Level \d+\))/, "$1 (Produces " + goldprod + "/h)");
