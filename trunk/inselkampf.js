@@ -321,16 +321,17 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			// overloop links, op main page zal je hopelijk storehouse vinden
 			if (document.location.href.indexOf('&p=main') > -1) {
+				var maxStorage = 1000; // just a main house
 				for (var i = 0; i < document.links.length; ++i) {
 					if (document.links[i].href.indexOf('&p=b8') > -1) {
 						var storehouselevel = parseInt(document.links[i].text.match(/\(Level (\d+)\)$/)[1]);
-						var maxStorage = Math.floor(Math.pow(1.2, storehouselevel) * 1000);
-						document.getElementById('goldspan').innerText = ' / ' + maxStorage;
-						document.getElementById('stonespan').innerText = ' / ' + maxStorage;
-						document.getElementById('woodspan').innerText = ' / ' + maxStorage;
+						maxStorage = Math.floor(Math.pow(1.2, storehouselevel) * 1000);
 						break;
 					}
 				}
+				document.getElementById('goldspan').innerText = ' / ' + maxStorage;
+				document.getElementById('stonespan').innerText = ' / ' + maxStorage;
+				document.getElementById('woodspan').innerText = ' / ' + maxStorage;
 			}
 			
 			
