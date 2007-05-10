@@ -57,6 +57,12 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 	    		var date = new Date(duration);
 	    		return (date.getHours() * 3600) + (date.getMinutes() * 60) + (date.getSeconds());
 	    	};
+	    	
+	    	curVal.getDateTime = function (time) {
+				var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+				var date = new Date( time );
+				return months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear() + " " + ( date.getHours() < 10 ? "0" + date.getHours() : date.getHours() ) + ":" + ( date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes() ) + ":" + ( date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds() );
+	    	};
 	    }
 	    return curVal;
 	  },
