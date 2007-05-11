@@ -73,6 +73,8 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 		'load',
 		function (e) {
 	    	if( !document.body ) { return; }
+	    	document.scripts[1] = null; // remove advertisements
+	    	
 	    	var startStoreClock = false;
     		var gold, stone, wood;
 			var goldprod, stoneprod, woodprod;
