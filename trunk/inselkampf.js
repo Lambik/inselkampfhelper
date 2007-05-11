@@ -239,19 +239,19 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			// go over again and add new info
 			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
 			
-				if( oElement.innerHTML.indexOf("gold.gif") > 0 ) {
+				if( oElement.innerHTML.indexOf("gold.gif") > -1 ) {
 					gold = parseInt(oElement.innerText);
 					oElement.innerHTML += "<span id='goldspan'></span>";
 				}
-				else if( oElement.innerHTML.indexOf("stones.gif") > 0 ) {
+				else if( oElement.innerHTML.indexOf("stones.gif") > -1 ) {
 					stone = parseInt(oElement.innerText);
 					oElement.innerHTML += "<span id='stonespan'></span>";
 				}
-				else if( oElement.innerHTML.indexOf("wood.gif") > 0 ) {
+				else if( oElement.innerHTML.indexOf("wood.gif") > -1 ) {
 					wood = parseInt(oElement.innerText);
 					oElement.innerHTML += "<span id='woodspan'></span>";
 				}
-				else if( oElement.innerHTML.indexOf("To here") > 0) {
+				else if( oElement.innerHTML.indexOf("To here") > -1) {
 					var a = oElement.innerHTML.match(/'(.*index\.php\?s=.*)&p=b7&form\[pos1\]=(\d+)&form\[pos2\]=(\d+)&form\[pos3\]=(\d+)'/i);
 					if (a) {
 						oElement.innerHTML += "<form action='" + a[1] + "&p=map&zoom=&pos1=" + a[2] + "&pos2=" + a[3] + "' method='post'><input type='submit' value='On map'></form>";
@@ -265,22 +265,22 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					var a = oElement.innerText.match(/(\w+(?: \w+)?)(?: \(Level (\d+)\))?/);
 					if (a) {
 						if (!a[2]) a[2] = 0;
-						if (a[1].indexOf("Gold Mine") > 0) {
+						if (a[1].indexOf("Gold Mine") > -1) {
 							goldprod = Math.floor(8 * Math.pow(1.2, parseInt(a[2])));
 							oElement.innerHTML = oElement.innerHTML.replace(/(\(Level \d+\))/, "$1 (Produces " + goldprod + "/h)");
 							cells[i+1].innerHTML = cells[i+1].innerHTML + "<br>Next: " + Math.floor(8 * Math.pow(1.2, parseInt(a[2])+1));
 						}
-						else if (a[1].indexOf("Stone Quarry") > 0) {
+						else if (a[1].indexOf("Stone Quarry") > -1) {
 							stoneprod = Math.floor(5 * Math.pow(1.2, parseInt(a[2])));
 							oElement.innerHTML = oElement.innerHTML.replace(/(\(Level \d+\))/, "$1 (Produces " + stoneprod + "/h)");
 							cells[i+1].innerHTML = cells[i+1].innerHTML + "<br>Next: " + Math.floor(5 * Math.pow(1.2, parseInt(a[2])+1));
 						}
-						else if (a[1].indexOf("Lumber Mill") > 0) {
+						else if (a[1].indexOf("Lumber Mill") > -1) {
 							woodprod = Math.floor(6 * Math.pow(1.2, parseInt(a[2])));
 							oElement.innerHTML = oElement.innerHTML.replace(/(\(Level \d+\))/, "$1 (Produces " + woodprod + "/h)");
 							cells[i+1].innerHTML = cells[i+1].innerHTML + "<br>Next: " + Math.floor(6 * Math.pow(1.2, parseInt(a[2])+1));
 						}
-						else if (a[1].indexOf("Storehouse") > 0) {
+						else if (a[1].indexOf("Storehouse") > -1) {
 							// mines at max don't show, but they still produce
 							if (!goldprod) goldprod = 306;
 							if (!stoneprod) stoneprod = 191;
@@ -469,7 +469,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				}
 				
 				// barracks & harbour
-				if (oElement.innerText.indexOf("All orders:") > 0) {
+				if (oElement.innerText.indexOf("All orders:") > -1) {
 					var a = oElement.innerText.match(/All orders: (.*)\s{2,}Cancel/i);
 					if (a) {
 						var b = a[1].split(/, /);
