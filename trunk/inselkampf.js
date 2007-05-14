@@ -506,6 +506,11 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					
 				}
 				
+				// fix silly typo on the laboratory page
+				if (oElement.innerText.indexOf("the more") > -1) {
+					oElement.innerText = oElement.innerText.replace(/the more the more/, 'the more');
+				}
+				
 			}
 			
 			
