@@ -462,7 +462,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var startOrderClock = false;
 			var orderTotalTime = 0;
 			var divs = document.getElementsByTagName('div');
-			divs[0].style.display = 'none'; // hide advertisements
+		//	divs[0].style.display = 'none'; // hide advertisements
 			for( var i = 0, oElement; oElement = divs[i]; i++ ) {
 				
 				// add a few links
