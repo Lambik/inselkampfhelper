@@ -215,8 +215,8 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			//gather resources and duration of things and put them in arrays
 			// golds, woods, stones[index of row] = amount
-			// items[index of row] = name of what the thing is
-			// durs['name of thing'] = secs
+			// items['name of thing' + 's'] = index of row
+			// durs[index of row] = secs
 			// hulpfunctie: DateHelper.toSeconds(durationstring)
 			// overloop dus nog eens alle cellen
 			var golds = new Array();
@@ -231,8 +231,8 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					golds[golds.length] = a[2];
 					stones[stones.length] = a[3];
 					woods[woods.length] = a[4];
-					items[items.length] = a[1];
-					durs[a[1] + 's'] = DateHelper.toSeconds(a[5]);
+					items[a[1] + 's'] = items.length;
+					durs[durs.length] = DateHelper.toSeconds(a[5]);
 				}
 			}
 
@@ -370,7 +370,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							document.getElementById(r + 'wood').innerText = this.value * woods[r];
 							if (wood < this.value * woods[r]) { document.getElementById(r + 'wood').style.color = 'red'; } else { document.getElementById(r + 'wood').style.color = 'green'; }
 							
-							var mydur = this.value * durs[items[r] + 's'];
+							var mydur = this.value * durs[r];
 							mydur = (mydur == 0 ? '-' : (DateHelper.getDuration(mydur) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + mydur * 1000 ) + ')'));
 							document.getElementById(r + 'dur').innerHTML = mydur;
 							
@@ -461,6 +461,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			// overloop divs
 			var startOrderClock = false;
 			var orderTotalTime = 0;
+			var orderTotalGold = 0, orderTotalStone = 0, orderTotalWood = 0;
 			var divs = document.getElementsByTagName('div');
 		//	divs[0].style.display = 'none'; // hide advertisements
 			for( var i = 0, oElement; oElement = divs[i]; i++ ) {
@@ -483,14 +484,26 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 								c[1] -= 1;
 								orderTotalTime += clocks['clock_0']; // + wat al gedaan is van deze eerste order
 							}
-							var singlecost = durs[c[2]]; if (!singlecost) { singlecost = durs[c[2] + 's']; }
-							orderTotalTime += (c[1] * singlecost);
+							var singleGoldCost = golds[items[c[2]]];
+							if (!singleGoldCost) { singleGoldCost = golds[items[c[2] + 's']]; }
+							orderTotalGold += (c[1] * singleGoldCost);
+							
+							var singleStoneCost = stones[items[c[2]]];
+							if (!singleStoneCost) { singleStoneCost = stones[items[c[2] + 's']]; }
+							orderTotalStone += (c[1] * singleStoneCost);
+							
+							var singleWoodCost = woods[items[c[2]]];
+							if (!singleWoodCost) { singleWoodCost = woods[items[c[2] + 's']]; }
+							orderTotalWood += (c[1] * singleWoodCost);
+							
+							var singleTimeCost = durs[items[c[2]]];
+							if (!singleTimeCost) { singleTimeCost = durs[items[c[2] + 's']]; }
+							orderTotalTime += (c[1] * singleTimeCost);
 						}
 					}
 					
-					if (orderTotalTime != clocks['clock_0']) {
+					if (orderTotalTime != 0 && orderTotalTime != clocks['clock_0']) {
 						// allemaal omdat gewoon innerHTML += niet werkt (breekt id van Duration: of zo)
-						var theBR = document.createElement('br');
 						var theBOLD = document.createElement('b');
 						var theInfoText = document.createTextNode('Done in: ');
 						var theTotalDuration = document.createElement('span');
@@ -499,8 +512,16 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						theTotalDuration.appendChild(theTotalDurationText);
 						theBOLD.appendChild(theInfoText);
 						theBOLD.appendChild(theTotalDuration);
-						oElement.appendChild(theBR);
+						oElement.appendChild(document.createElement('br'));
 						oElement.appendChild(theBOLD);
+						
+						theBOLD = document.createElement('b');
+						theInfoText = document.createTextNode('Totals: Gold: ' + orderTotalGold + ' Stone: ' + orderTotalStone + ' Wood: ' + orderTotalWood);
+						theBOLD.appendChild(theInfoText);
+						
+						oElement.appendChild(document.createElement('br'));
+						oElement.appendChild(theBOLD);
+						
 						startOrderClock = true;
 					}
 					
