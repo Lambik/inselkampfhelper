@@ -570,7 +570,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					buildinfo['stonequarry'] = [5, 1.2, 50, 50, 50];
 					buildinfo['lumbermill'] = [6, 1.2, 75, (175/3), 50];
 					buildinfo['storehouse'] = [1000, 1.2, 75, 50, 75];
-					buildinfo['stonewall'] = [50, 1.25, (250/3), 125, 150];
+					buildinfo['stonewall'] = [50, 1.25, (250/3), 125, (125/3)];
 					buildinfo['watch-tower'] = [1, 1.2, 25, 75, (125/3)];
 					
 					var thisbuilding = bolds[i-1].innerText.toLowerCase().replace(/\s/g, '');
@@ -582,7 +582,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					var msg = '<table class="table"><caption>Building costs</caption><tr><td><b>Level</b></td><td><b>Gold</b></td><td><b>Stone</b></td><td><b>Lumber</b></td><td><b>' + buildingaction + '</b></tr>';
 					
 					for (var cl = currlevel + 1; cl <= 20; ++cl) {
-						msg += '<tr><td>' + cl + '</td><td>' + Math.floor(buildinfo[thisbuilding][2] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][3] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][4] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][0] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td></tr>';
+						msg += '<tr><td>' + cl + '</td><td>' + Math.floor(buildinfo[thisbuilding][2] * Math.pow(1.2, cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][3] * Math.pow(1.2, cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][4] * Math.pow(1.2, cl)) + '</td><td>' + Math.floor(buildinfo[thisbuilding][0] * Math.pow(buildinfo[thisbuilding][1], cl)) + '</td></tr>';
 					}
 					
 					msg += '</table>';
