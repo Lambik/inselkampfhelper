@@ -224,6 +224,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var woods = new Array();
 			var items = new Array();
 			var durs = new Array();
+			var cellcount = 0;
 			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
 				var a = oElement.innerText.match(/\s*((?:\w|\s|-)+)(?: \(Level \d+\))?(?:\r\n|\r|\n).*Gold:\s+(\d+)\s+Stone:\s+(\d+)\s+Lumber:\s+(\d+)\s+Duration:\s+(\d+:\d+:\d+)/i);
 
@@ -231,7 +232,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					golds[golds.length] = a[2];
 					stones[stones.length] = a[3];
 					woods[woods.length] = a[4];
-					items[a[1] + 's'] = items.length;
+					items[a[1] + 's'] = cellcount++;
 					durs[durs.length] = DateHelper.toSeconds(a[5]);
 				}
 			}
@@ -479,11 +480,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						var oo = '';
 						for (var rr = 0; rr < b.length; rr++) {
 							c = b[rr].match(/(\d+) (.*)/); // (5) (large warship/ships)
-							if (rr == 0) {
-								// eerste order - 1 doen, omdat hij al bezig is
-								c[1] -= 1;
-								orderTotalTime += clocks['clock_0']; // + wat al gedaan is van deze eerste order
-							}
+
 							var singleGoldCost = golds[items[c[2]]];
 							if (!singleGoldCost) { singleGoldCost = golds[items[c[2] + 's']]; }
 							orderTotalGold += (c[1] * singleGoldCost);
@@ -496,33 +493,42 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							if (!singleWoodCost) { singleWoodCost = woods[items[c[2] + 's']]; }
 							orderTotalWood += (c[1] * singleWoodCost);
 							
+							if (rr == 0) {
+								// eerste order - 1 doen, omdat hij al bezig is
+								c[1] -= 1;
+								orderTotalTime += clocks['clock_0']; // + wat al gedaan is van deze eerste order
+							}
+
 							var singleTimeCost = durs[items[c[2]]];
 							if (!singleTimeCost) { singleTimeCost = durs[items[c[2] + 's']]; }
 							orderTotalTime += (c[1] * singleTimeCost);
 						}
 					}
-					
-					if (orderTotalTime != 0 && orderTotalTime != clocks['clock_0']) {
-						// allemaal omdat gewoon innerHTML += niet werkt (breekt id van Duration: of zo)
+
+					if (orderTotalTime != 0) {
+						if (orderTotalTime != clocks['clock_0']) {
+							// allemaal omdat gewoon innerHTML += niet werkt (breekt id van Duration: of zo)
+							var theBOLD = document.createElement('b');
+							var theInfoText = document.createTextNode('Done in: ');
+							var theTotalDuration = document.createElement('span');
+							var theTotalDurationText = document.createTextNode(DateHelper.getDuration(orderTotalTime));
+							theTotalDuration.setAttribute('id', 'ordersdonein');
+							theTotalDuration.appendChild(theTotalDurationText);
+							theBOLD.appendChild(theInfoText);
+							theBOLD.appendChild(theTotalDuration);
+							oElement.appendChild(document.createElement('br'));
+							oElement.appendChild(theBOLD);
+
+							startOrderClock = true;
+						}
+						
 						var theBOLD = document.createElement('b');
-						var theInfoText = document.createTextNode('Done in: ');
-						var theTotalDuration = document.createElement('span');
-						var theTotalDurationText = document.createTextNode(DateHelper.getDuration(orderTotalTime));
-						theTotalDuration.setAttribute('id', 'ordersdonein');
-						theTotalDuration.appendChild(theTotalDurationText);
-						theBOLD.appendChild(theInfoText);
-						theBOLD.appendChild(theTotalDuration);
-						oElement.appendChild(document.createElement('br'));
-						oElement.appendChild(theBOLD);
-						
-						theBOLD = document.createElement('b');
-						theInfoText = document.createTextNode('Totals: Gold: ' + orderTotalGold + ' Stone: ' + orderTotalStone + ' Wood: ' + orderTotalWood);
+						var theInfoText = document.createTextNode('Totals: Gold: ' + orderTotalGold + ' Stone: ' + orderTotalStone + ' Lumber: ' + orderTotalWood);
 						theBOLD.appendChild(theInfoText);
 						
 						oElement.appendChild(document.createElement('br'));
 						oElement.appendChild(theBOLD);
 						
-						startOrderClock = true;
 					}
 					
 				}
