@@ -469,7 +469,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				
 				// add a few links
 				if (oElement.className == "signout") {
-					oElement.innerHTML = "<a href='http://www.inselkampf.com/help.htm' target='_blank'>Help</a>&nbsp;&nbsp;" + oElement.innerHTML;
+					oElement.innerHTML = "<a href='http://www.inselkampf.com/index.php?controller=help' target='_blank'>Help</a>&nbsp;&nbsp;" + oElement.innerHTML;
 				}
 				
 				// barracks & harbour
