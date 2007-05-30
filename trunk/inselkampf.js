@@ -262,7 +262,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					
 				}
 				
-				else {
+				else if (document.location.href.indexOf('&p=b1') > -1) {
 				//	var a = oElement.innerText.match(/(.+) \(Level (\d+)\)/);
 					var a = oElement.innerText.match(/(\w+(?: \w+)?)(?: \(Level (\d+)\))?/);
 					if (a) {
