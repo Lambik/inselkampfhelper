@@ -308,7 +308,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			// now do it again, but update the times needed
 			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
-				var a = oElement.innerHTML.match(/(red|ff0000).*(Upgrade to level|Research|Build)/i);
+				var a = oElement.innerHTML.match(/(red|ff0000).*>.*(Upgrade to level|Research|Build)/i);
 				if (a) {
 					// als dit gevonden, dan in vorige cell kijken hoeveel nodig was
 					var goldwait = (golds[(i-4)/2] - gold) * 3600 / goldprod;
