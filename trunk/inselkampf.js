@@ -132,81 +132,84 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
 				if (tables[i].className == 'table') { // list page, alliance pages, random island page
 					var rows = tables[i].getElementsByTagName('tr');
-					var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
-
-					// add a row with totals
-					if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
-						var cells2sum;
-						if (numcells == 6) {
-							cells2sum = [1, 2, 3];  // starting at 0 of course
-						}
-						else {
-							cells2sum = [1, 2];
-						}
-						
-						var totalsisles = new Array();
-						for (var k = 0; k < cells2sum.length; ++k) { // boring init
-							totalsisles[k] = 0;
-						}
-						for (var r = 1; r < rows.length; ++r) {
-							for (var k = 0; k < cells2sum.length; ++k) {
-								totalsisles[k] += parseInt(rows[r].children[cells2sum[k]].innerText);
+					// on lab page a table can have 0 rows (probably research table after research is all done)
+					if (rows.length > 0) {
+						var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
+	
+						// add a row with totals
+						if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
+							var cells2sum;
+							if (numcells == 6) {
+								cells2sum = [1, 2, 3];  // starting at 0 of course
+							}
+							else {
+								cells2sum = [1, 2];
+							}
+							
+							var totalsisles = new Array();
+							for (var k = 0; k < cells2sum.length; ++k) { // boring init
+								totalsisles[k] = 0;
+							}
+							for (var r = 1; r < rows.length; ++r) {
+								for (var k = 0; k < cells2sum.length; ++k) {
+									totalsisles[k] += parseInt(rows[r].children[cells2sum[k]].innerText);
+								}
+							}
+							
+							var newtfoot = tables[i].createTFoot(); //Create new tfoot
+							var newtfootrow = newtfoot.insertRow(0); //Define a new row for the tfoot
+							newtfootrow.insertCell(0).innerHTML = "Totals"; //Define a new cell for the tfoot's row
+							for (var r = 0; r < totalsisles.length; ++r) {
+								newtfootrow.insertCell(r+1).innerHTML = totalsisles[r];
+							}
+							for (var r = totalsisles.length + 1; r < numcells; ++r) {
+								newtfootrow.insertCell(r); // visual appearance
 							}
 						}
 						
-						var newtfoot = tables[i].createTFoot(); //Create new tfoot
-						var newtfootrow = newtfoot.insertRow(0); //Define a new row for the tfoot
-						newtfootrow.insertCell(0).innerHTML = "Totals"; //Define a new cell for the tfoot's row
-						for (var r = 0; r < totalsisles.length; ++r) {
-							newtfootrow.insertCell(r+1).innerHTML = totalsisles[r];
+						else if (rows[0].children[0].innerText == 'New order') { // harbour page, orders
+							// preparation to show how much units and resources you can ship
+							var newrow = tables[i].insertRow(rows.length - 1);
+							newrow.insertCell(0).innerHTML = "Units: <span id='orders_units'>0</span> Resources: <span id='orders_res'>0</span>";
+							newrow.insertCell(1); // visuals
 						}
-						for (var r = totalsisles.length + 1; r < numcells; ++r) {
-							newtfootrow.insertCell(r); // visual appearance
-						}
-					}
 					
-					else if (rows[0].children[0].innerText == 'New order') { // harbour page, orders
-						// preparation to show how much units and resources you can ship
-						var newrow = tables[i].insertRow(rows.length - 1);
-						newrow.insertCell(0).innerHTML = "Units: <span id='orders_units'>0</span> Resources: <span id='orders_res'>0</span>";
-						newrow.insertCell(1); // visuals
-					}
-					
-					else if (rows[0].children[0].innerText == 'Transport' || rows[0].children[0].innerText == 'Attack' ) { // shipping orders
-						for (var r = 1; r < rows.length; ++r) {
-							if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>army (') == 0) {
-								rows[r].children[0].innerHTML += " (<span id='orders_units'>0</span>)";
-							}
-							else if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>resources (') == 0) {
-								rows[r].children[0].innerHTML += " (<span id='orders_res'>0</span>)";
+						else if (rows[0].children[0].innerText == 'Transport' || rows[0].children[0].innerText == 'Attack' ) { // shipping orders
+							for (var r = 1; r < rows.length; ++r) {
+								if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>army (') == 0) {
+									rows[r].children[0].innerHTML += " (<span id='orders_units'>0</span>)";
+								}
+								else if (rows[r].children[0].innerHTML.toLowerCase().indexOf('<b>resources (') == 0) {
+									rows[r].children[0].innerHTML += " (<span id='orders_res'>0</span>)";
+								}
 							}
 						}
-					}
 					
-					else if (rows[0].children[0].innerText == 'Members') { // alliance, members page
-						// make a list with all members in mailable format at bottom
-						// - collect in array
-						// - divide in pieces of 50
-						// - add mail-button per segment
-						var allmembers = new Array();
-						for (var r = 2; r < rows.length; ++r) { // 2 to skip 'Members' and 'Player' rows
-							allmembers.push(rows[r].children[0].innerText.split(' ')[0]);
+						else if (rows[0].children[0].innerText == 'Members') { // alliance, members page
+							// make a list with all members in mailable format at bottom
+							// - collect in array
+							// - divide in pieces of 50
+							// - add mail-button per segment
+							var allmembers = new Array();
+							for (var r = 2; r < rows.length; ++r) { // 2 to skip 'Members' and 'Player' rows
+								allmembers.push(rows[r].children[0].innerText.split(' ')[0]);
+							}
+							
+							var newDiv = document.createElement('div');
+							newDiv.id = 'membersinfo';
+							
+							var msg = '<h3>' + allmembers.length + ' members</h3>';
+							msg += '<table><tr><td width="10"></td><td><b>Members</b></td></tr>';
+							for (var i = 0, sc = 1; i < allmembers.length; i += 50, ++sc) {
+								var segment = allmembers.slice(i, i+50);
+								msg += "<tr><td>" + sc + "</td><td>" + segment.join(' ; ') + "</td></tr>";
+							}
+							
+							msg += '</table>';
+			
+							newDiv.innerHTML = msg;
+							document.body.appendChild(newDiv);
 						}
-						
-						var newDiv = document.createElement('div');
-						newDiv.id = 'membersinfo';
-						
-						var msg = '<h3>' + allmembers.length + ' members</h3>';
-						msg += '<table><tr><td width="10"></td><td><b>Members</b></td></tr>';
-						for (var i = 0, sc = 1; i < allmembers.length; i += 50, ++sc) {
-							var segment = allmembers.slice(i, i+50);
-							msg += "<tr><td>" + sc + "</td><td>" + segment.join(' ; ') + "</td></tr>";
-						}
-						
-						msg += '</table>';
-		
-						newDiv.innerHTML = msg;
-						document.body.appendChild(newDiv);
 					}
 				}
 			}
