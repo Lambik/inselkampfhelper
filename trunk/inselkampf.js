@@ -606,8 +606,18 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 				var alliances = new Array();
 				var unruled = new Array();
+				var validislands = 0; // bug in IK source, it lists islands at other edge if looking at this.
 				
 				for (var i = 0; i < areas.length; ++i) {
+				
+					var coords = areas[i].coords.split(',');
+					var cont = false;
+					for (var c = 0; c < coords.length; ++c) {
+						if (coords[c] < 0 || coords[c] > 420) { cont = true; }
+					}
+					if (cont) { continue; }
+					++validislands;
+					
 					// var temparr = areas[i].title.split('\n');	// werkt in IE, niet in opera
 					// attention! this regular expression will be fooled if someone names his island funny!
 					var a = areas[i].title.match(/Island: (.*?)Position: (\d+:\d+:\d+)(?:Ruler: (.*?))?(?:Alliance: (\[\S+\]))?Score: (\d+)/);
@@ -638,7 +648,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				var newDiv = document.createElement('div');
 				newDiv.id = 'mapinfo';
 				
-				var msg = '<h3>' + areas.length + ' islands</h3>';
+				var msg = '<h3>' + validislands + ' islands</h3>';
 				msg += '<table><tr><td><b>Alliance</b></td><td><b>Members</b></td><td><b># Islands</b></td></tr>';
 				
 				for (var alliance in alliances) {
