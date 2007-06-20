@@ -475,7 +475,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					oElement.innerHTML = "<a href='http://www.inselkampf.com/index.php?controller=help' target='_blank'>Help</a>&nbsp;&nbsp;" + oElement.innerHTML;
 				}
 				
-				// barracks & harbour
+				// barracks & harbour & laboratory
 				if (oElement.innerText.indexOf("All orders:") > -1) {
 					var a = oElement.innerText.match(/All orders: (.*)\s{2,}Cancel/i);
 					if (a) {
@@ -499,12 +499,19 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							if (rr == 0) {
 								// eerste order - 1 doen, omdat hij al bezig is
 								c[1] -= 1;
-								orderTotalTime += clocks['clock_0']; // + wat al gedaan is van deze eerste order
+								// + wat al gedaan is van deze eerste order
+								if (document.location.href.indexOf('&p=b5') == -1) {
+									orderTotalTime += clocks['clock_0'];
+								}
+								else { // lab is special
+									orderTotalTime += clocks['clock_1'];
+								}
 							}
 
 							var singleTimeCost = durs[items[c[2]]];
 							if (!singleTimeCost) { singleTimeCost = durs[items[c[2] + 's']]; }
 							orderTotalTime += (c[1] * singleTimeCost);
+							alert(singleTimeCost + "-" + c[1] + "-" + (c[1] * singleTimeCost) + "-" + orderTotalTime);
 						}
 					}
 
