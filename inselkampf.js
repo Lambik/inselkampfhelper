@@ -511,7 +511,6 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							var singleTimeCost = durs[items[c[2]]];
 							if (!singleTimeCost) { singleTimeCost = durs[items[c[2] + 's']]; }
 							orderTotalTime += (c[1] * singleTimeCost);
-							alert(singleTimeCost + "-" + c[1] + "-" + (c[1] * singleTimeCost) + "-" + orderTotalTime);
 						}
 					}
 
