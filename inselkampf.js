@@ -128,6 +128,10 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			}
 */			
 			
+			// get player name
+			var playername = document.getElementsByTagName('b')[0].innerText;
+			
+			
 			var tables = document.getElementsByTagName('table');
 			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
 				if (tables[i].className == 'table') { // list page, alliance pages, random island page
@@ -210,6 +214,21 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							newDiv.innerHTML = msg;
 							document.body.appendChild(newDiv);
 						}
+
+						else if (rows[0].children[0].innerText == 'Events') { // events page
+							// add a delete button on top of the table
+							rows[0].children[0].innerHTML = "<span style='float: left; font-weight: bold;'>Events</span><span style='float: right;'><input type='button' value='Delete' onclick='document.getElementById(\"events\").submit();'></span>";
+							
+							// select unseen and thus new events of transport to you automatically
+							// will not select already seen transports to you, because it assumes
+							// you want to keep them otherwise you'd have deleted them yourself
+							for (var r = 2; r < rows.length - 2; ++r) { // 2 to skip 'Events' and 'Island' rows, and bottom rows
+								if (rows[r].children[1].children.length > 2 && rows[r].children[1].children[2].innerText == 'Transport to ' + playername) {
+									document.getElementById('events').elements[r-1].checked = true;
+								}
+							}
+						}
+
 					}
 				}
 			}
