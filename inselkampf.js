@@ -142,11 +142,17 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 	
 						// add a row with totals
 						if (rows[0].children[0].innerText == 'Island' && rows[0].children[numcells-1].width == '1%') { // list page only
+							// make table a bit wider
+							tables[i].style.width = '80%';
+							
 							var cells2sum;
-							if (numcells == 6) {
+							if (numcells == 6) {	// resources
 								cells2sum = [1, 2, 3];  // starting at 0 of course
+								
+								// make orders column fixed width
+								rows[0].children[4].style.width = '63px';
 							}
-							else {
+							else {					// fleets
 								cells2sum = [1, 2];
 							}
 							
