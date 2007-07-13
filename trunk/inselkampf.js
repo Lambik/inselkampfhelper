@@ -3,6 +3,8 @@
 Inselkampf helper: shows you the limits of the game!
 Copyright (C) 2007  Tom Muylle
 
+Version: $Id$
+
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
@@ -781,7 +783,7 @@ document.getElementById('nextlink').onclick = function () {
 function dump_props(obj) {
    var result = "";
    for (var i in obj) {
-      result += i + " = " + obj[i] + "<br>";
+      result += i + " = " + obj[i] + "<br>\n";
    }
    result += "<hr>";
    return result;
