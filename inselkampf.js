@@ -143,7 +143,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						var numcells = rows[0].children.length;  // 6 for resources, 4 for fleet, 3 for alliance pages
 	
 						// add a row with totals
-						if (rows[0].children[0].innerText == 'Island' && rows[0].children[1].innerText != 'Schedule' && rows[0].children[numcells-1].width == '1%') { // list page only
+						if (rows[0].children[0].innerText == 'Island' && rows[0].children.length > 1 && rows[0].children[1].innerText != 'Schedule' && rows[0].children[numcells-1].width == '1%') { // list page only
 							// make table a bit wider
 							rows[0].children[numcells-1].width = '1px';
 							tables[i].style.width = '80%';
