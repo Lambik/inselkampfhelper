@@ -1,13 +1,24 @@
 #summary All features of the script.
 
 = Features =
-  * All countdown clocks show full time (xx days, xx hours, xx minutes, xx seconds)
-  * Build and Research pages show you time until you can do the next upgrade (if it doesn't know the mine level, it assumes 20 for all and shows that)
+  * All countdown clocks show full time on hover (xx days, xx hours, xx minutes, xx seconds)
+  * Build and Research pages show you the time until you can do the next upgrade (if it doesn't know the mine level, it assumes 20 for all and shows that)
   * For some things like storehouse and mines, it shows you what the next limit will be
   * Shows on build page when storehouse will be full (assuming storehouse can still be upgraded)
   * Training page: shows total duration of all orders
   * Training page: shows needed resources to train xx units, and tells you how long you have to wait until you have those resources (assuming mines level 20)
   * Island details page: adds a button to the Calculator page to easily calculate the distance to that island
+  * List page: adds a row with totals
+  * Harbour: in the transport/attack section: shows you how much your ships can carry
+  * Your alliance page (Members section): at the bottom of the page, you'll find a list of all members, in groups of 50 names, for easy mass mailing
+  * Events page: adds a button "Delete" at the top of the page; also checks new events "Transport to you" automatically
+  * On page of an island reached from Map: new buttons "On map" (goes to map), and "Calculate distance" (links to Calculator page with details filled in)
+  * Harbour page: you can paste island coordinates in the form xx:yy:zz in the first box (with ctrl-v), the data will be split automatically over the other boxes
+  * Next to "Sign Out" link, a "Help" link has been added
+  * On the laboratory page, a silly typo of Sven has been fixed
+  * Several pages of buildings show the cost to upgrade them to other levels, if upgrading is still possible (resources, storehouse, stone wall, watch-tower)
+  * Map page shows more info: who is in the visible section, their alliance, in a mailable list format, with the number of islands in the alliance. Rulerless islands, if any, are noted too
+
 
 = TODO =
-  * show information in the main page about storehouse
+  * you tell me
