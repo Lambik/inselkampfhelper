@@ -254,8 +254,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var woods = new Array();
 			var items = new Array();
 			var durs = new Array();
-			var cellcount = 0;
-			for( var i = 0, oElement; oElement = cells[i]; i++ ) {
+			for( var i = 0, oElement, cellcount = 0; oElement = cells[i]; i++ ) {
 				var a = oElement.innerText.match(/\s*((?:\w|\s|-)+)(?: \(Level \d+\))?(?:\r\n|\r|\n).*Gold:\s+(\d+)\s+Stone:\s+(\d+)\s+Lumber:\s+(\d+)\s+Duration:\s+(\d+:\d+:\d+)/i);
 
 				if (a) {
@@ -378,13 +377,13 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 			var inputs = document.getElementsByTagName('input');
 			
-			for (var i = 0, oElement; oElement = inputs[i]; ++i) {
+			for (var i = 0, oElement, numbercounter = 0; oElement = inputs[i]; ++i) {
 				//alert(oElement.type);
 				if (oElement.type == 'text') {
 					if (oElement.name == 'number') {
-						oElement.id = (i / 2) + 'input';
-						theCell = cells[(3 + (i * 1.5))];
-						theCell.innerHTML += "<div id='" + (i/2) + "info' style='display: none'><b>Needed:</b> Gold: <span id='" + (i/2) + "gold' style='color: green'>0</span> Stone: <span id='" + (i/2) + "stone' style='color: green'>0</span> Lumber: <span id='" + (i/2) + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + (i/2) + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + (i/2) + "needed'>-</span></div>";
+						oElement.id = numbercounter + 'input';
+						theCell = cells[(3 + (numbercounter * 3))];
+						theCell.innerHTML += "<div id='" + numbercounter + "info' style='display: none'><b>Needed:</b> Gold: <span id='" + numbercounter + "gold' style='color: green'>0</span> Stone: <span id='" + numbercounter + "stone' style='color: green'>0</span> Lumber: <span id='" + numbercounter + "wood' style='color: green'>0</span><br><b>Duration:</b> <span id='" + numbercounter + "dur'>-</span><br><b>Ass. mines 20:</b> <span id='" + numbercounter + "needed'>-</span></div>";
 						
 						oElement.onkeyup = function() {
 							var r = parseInt(this.id);
@@ -419,8 +418,9 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 								myneeded = DateHelper.getDuration(longestwait) + '<br>&nbsp;&nbsp;&nbsp;&nbsp;(' + DateHelper.getDateTime( new Date().getTime() + longestwait * 1000 ) + ')';
 							}
 							document.getElementById(r + 'needed').innerHTML = myneeded;
-	
 						};
+						
+						++numbercounter;
 					}
 					else if (oElement.name == 'form[pos1]') {
 						// harbour, entering coords
@@ -485,7 +485,87 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
 					}
 				}
+				else if (oElement.type == 'submit') {
+					if (oElement.value == 'Train' || oElement.value == 'Build') {
+						var par = oElement.parentNode;
+						par.style.width = '8em';
+						
+						var buttX = document.createElement('input');
+						buttX.type = 'button';
+						buttX.value = 'X';
+						buttX.id = numbercounter + 'buttX';
+						buttX.onclick = function() {
+							var r = parseInt(this.id) - 1;
+							
+							document.forms[r].elements[0].value = 0;
+						};
+						par.appendChild(buttX);
 
+						par.appendChild(document.createElement('br'));
+						var buttMax = document.createElement('input');
+						buttMax.type = 'button';
+						buttMax.value = 'Max';
+						buttMax.id = numbercounter + 'buttMax';
+						buttMax.onclick = function() {
+							var r = parseInt(this.id) - 1;
+							
+							var maxG = Math.floor(gold / golds[r]);
+							var maxS = Math.floor(stone / stones[r]);
+							var maxW = Math.floor(wood / woods[r]);
+							
+							document.forms[r].elements[0].value = Math.min(Math.min(maxG, maxS), maxW);
+						};
+						par.appendChild(buttMax);
+						
+						var buttDay = document.createElement('input');
+						buttDay.type = 'button';
+						buttDay.value = 'Day';
+						buttDay.id = numbercounter + 'buttMax';
+						buttDay.onclick = function() {
+							var r = parseInt(this.id) - 1;
+							
+							// first look how much we can actually build
+							var maxG = Math.floor(gold / golds[r]);
+							var maxS = Math.floor(stone / stones[r]);
+							var maxW = Math.floor(wood / woods[r]);
+							
+							var amountMax = Math.min(Math.min(maxG, maxS), maxW);
+							
+							// then look at how much a day build is
+							var amountDay = Math.floor(86400 / durs[r]);
+							
+							// now enter the minimum value
+							document.forms[r].elements[0].value = Math.min(amountMax, amountDay);
+						};
+						par.appendChild(buttDay);
+
+						par.appendChild(document.createElement('br'));
+						
+						var buttp1 = document.createElement('input');
+						buttp1.type = 'button';
+						buttp1.value = '+1';
+						buttp1.id = numbercounter + 'buttp1';
+						buttp1.onclick = function() {
+							var r = parseInt(this.id) - 1;
+							
+							document.forms[r].elements[0].value = parseInt(document.forms[r].elements[0].value) + 1;
+						};
+						par.appendChild(buttp1);
+
+						var buttp5 = document.createElement('input');
+						buttp5.type = 'button';
+						buttp5.value = '+5';
+						buttp5.id = numbercounter + 'buttp1';
+						buttp5.onclick = function() {
+							var r = parseInt(this.id) - 1;
+							
+							document.forms[r].elements[0].value = parseInt(document.forms[r].elements[0].value) + 5;
+						};
+						par.appendChild(buttp5);
+						
+					}
+				}
+			
 			}
 			
 
@@ -723,10 +803,10 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				for (var i = 0; i < form.elements.length; ++i) {
 					var whowhat = form.elements[i].title.split(' ');
 					if (whowhat[1] == 'units') {
-						units += parseInt(whowhat[0]) * form.elements[i].value;
+						units += parseInt(whowhat[0]) * parseInt(form.elements[i].value);
 					}
 					else if (whowhat[1] == 'resources') {
-						resources += parseInt(whowhat[0]) * form.elements[i].value;
+						resources += parseInt(whowhat[0]) * parseInt(form.elements[i].value);
 					}
 				}
 				if (document.getElementById('orders_units')) {
