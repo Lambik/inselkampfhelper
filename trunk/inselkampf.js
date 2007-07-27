@@ -527,14 +527,14 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 								// eerste order - 1 doen, omdat hij al bezig is
 								c[1] -= 1;
 								// + wat al gedaan is van deze eerste order
-								if (gup('p') == 'b5') {
+								if (gup('p') != 'b5') {
 									orderTotalTime += clocks['clock_0'];
 								}
 								else { // lab is special
 									orderTotalTime += clocks['clock_1'];
 								}
 							}
-
+							
 							var singleTimeCost = durs[items[c[2]]];
 							if (!singleTimeCost) { singleTimeCost = durs[items[c[2] + 's']]; }
 							orderTotalTime += (c[1] * singleTimeCost);
