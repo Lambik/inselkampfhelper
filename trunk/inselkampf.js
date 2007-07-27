@@ -81,7 +81,6 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var goldprod, stoneprod, woodprod;
 			var minesunknown = false;
 			
-			
 			// http://4umi.com/web/javascript/array.htm
 			// Array.indexOf( value, begin, strict ) - Return index of the first element that matches value
 			Array.prototype.indexOf = function( v, b, s ) {
@@ -293,7 +292,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					
 				}
 				
-				else if (document.location.href.indexOf('&p=b1') > -1) {
+				else if (gup('p') == 'b1') {
 				//	var a = oElement.innerText.match(/(.+) \(Level (\d+)\)/);
 					var a = oElement.innerText.match(/(\w+(?: \w+)?)(?: \(Level (\d+)\))?/);
 					if (a) {
@@ -357,7 +356,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			
 			// overloop links, op main page zal je hopelijk storehouse vinden
-			if (document.location.href.indexOf('&p=main') > -1) {
+			if (gup('p') == 'main') {
 				var maxStorage = 1000; // just a main house
 				for (var i = 0; i < document.links.length; ++i) {
 					if (document.links[i].href.indexOf('&p=b8') > -1) {
@@ -528,7 +527,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 								// eerste order - 1 doen, omdat hij al bezig is
 								c[1] -= 1;
 								// + wat al gedaan is van deze eerste order
-								if (document.location.href.indexOf('&p=b5') == -1) {
+								if (gup('p') == 'b5') {
 									orderTotalTime += clocks['clock_0'];
 								}
 								else { // lab is special
@@ -750,7 +749,19 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 	);
 	
 
-
+// http://www.netlobo.com/url_query_string_javascript.html
+// get url parameter value
+function gup( name )
+{
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
 	
 
 /*	http://theonlyalterego.org/inselkampf.faq.html
