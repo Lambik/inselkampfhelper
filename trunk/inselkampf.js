@@ -354,6 +354,12 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			}
 			
 			
+			// on mail page, find all matches to xx:yy:zz and replace them with links
+			if (gup('p') == 'mail' && gup('sub') == 'show') {
+				cells[5].innerHTML = cells[5].innerHTML.replace(/(\d+):(\d+):(\d+)/g, "<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=map&sub=isle&pos1=$1&pos2=$2&pos3=$3' target='_blank'>$1:$2:$3</a>");
+			}
+			
+			
 			// overloop links, op main page zal je hopelijk storehouse vinden
 			if (gup('p') == 'main') {
 				var maxStorage = 1000; // just a main house
