@@ -81,6 +81,18 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var goldprod, stoneprod, woodprod;
 			var minesunknown = false;
 			
+			var fullnames = new Array();
+			fullnames['s1'] = 'Large Warships';
+			fullnames['s2'] = 'Large Merchant Ships';
+			fullnames['s3'] = 'Small Warships';
+			fullnames['s4'] = 'Small Merchant Ships';
+			fullnames['s5'] = 'Colonization Ships';
+			fullnames['catapult'] = 'Catapults';
+			fullnames['u1'] = 'Stone throwers';
+			fullnames['u2'] = 'Spearfighters';
+			fullnames['u3'] = 'Archers';
+			
+			
 			// http://4umi.com/web/javascript/array.htm
 			// Array.indexOf( value, begin, strict ) - Return index of the first element that matches value
 			Array.prototype.indexOf = function( v, b, s ) {
@@ -254,7 +266,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			var woods = new Array();
 			var items = new Array();
 			var durs = new Array();
-			for( var i = 0, oElement, cellcount = 0; oElement = cells[i]; i++ ) {
+			for( var i = 0, oElement, cellcount = 0; oElement = cells[i]; ++i ) {
 				var a = oElement.innerText.match(/\s*((?:\w|\s|-)+)(?: \(Level \d+\))?(?:\r\n|\r|\n).*Gold:\s+(\d+)\s+Stone:\s+(\d+)\s+Lumber:\s+(\d+)\s+Duration:\s+(\d+:\d+:\d+)/i);
 
 				if (a) {
@@ -327,6 +339,12 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						}
 					}
 				}
+				
+				else if (gup('p') == 'b7') { // harbour
+					if (oElement.innerText == 'New order') {
+						oElement.innerHTML = "<span style='float: left; font-weight: bold;'>New order</span><span style='float: right;'><input type='button' value='Fleetsave' onclick='var df = document.forms[document.forms.length-1]; var dfe = df.elements; if (dfe[0].value == 0) { dfe[0].value = 1; dfe[1].value = 1; dfe[2].value = 1; } for (var i = 3; i < dfe.length - 3; ++i) { var a = dfe[i].parentNode.parentNode.innerHTML.match(/<b>(.+?) \\((\\d+)\\)<\\/b>/i); if (a) { dfe[i].value = parseInt(a[2]); } } df.action += \"&a=fleetsave\"; dfe[dfe.length-3].click();'>";
+					}
+				}
 			}
 
 			// mines at max don't show, but they still produce
@@ -383,7 +401,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 
 			var inputs = document.getElementsByTagName('input');
 			
-			for (var i = 0, oElement, numbercounter = 0; oElement = inputs[i]; ++i) {
+			for (var i = 0, oElement, numbercounter = 0, hiddenrower = -1, fleet = new Object, units = new Array(); oElement = inputs[i]; ++i) {
 				//alert(oElement.type);
 				if (oElement.type == 'text') {
 					if (oElement.name == 'number') {
@@ -468,16 +486,35 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					else if (oElement.name == 'form[u1]') { //stone thrower
 						oElement.title = '1 units';
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+						if (gup('a') == 'fleetsave') {
+							var a = oElement.parentNode.parentNode.innerHTML.match(/<b>(.+?) \((\d+)\)<\/b>/i);
+							if (a) { units['u1'] = parseInt(a[2]); }
+						}
 					}
 					else if (oElement.name == 'form[u2]') { //spearfighter
 						oElement.title = '1 units';
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+						if (gup('a') == 'fleetsave') {
+							var a = oElement.parentNode.parentNode.innerHTML.match(/<b>(.+?) \((\d+)\)<\/b>/i);
+							if (a) { units['u2'] = parseInt(a[2]); }
+						}
 					}
 					else if (oElement.name == 'form[u3]') { //archer
 						oElement.title = '1 units';
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
+						if (gup('a') == 'fleetsave') {
+							var a = oElement.parentNode.parentNode.innerHTML.match(/<b>(.+?) \((\d+)\)<\/b>/i);
+							if (a) { units['u3'] = parseInt(a[2]); }
+						}
 					}
-					// TODO: check catapults
+					else if (oElement.name == 'form[catapult]') {
+						if (gup('a') == 'fleetsave') {
+							var a = oElement.parentNode.parentNode.innerHTML.match(/<b>(.+?) \((\d+)\)<\/b>/i);
+							if (a) {
+								oElement.value = Math.min(parseInt(a[2]), (fleet['s1']?fleet['s1']:0));
+							}
+						}
+					}
 					else if (oElement.name == 'form[gold]') { //gold
 						oElement.title = '1 resources';
 						oElement.onkeyup = function () { updateUnitsResources(this.form); }
@@ -569,6 +606,44 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 						};
 						par.appendChild(buttp5);
 						
+					}
+					else if (oElement.value == 'Next' && gup('a') == 'fleetsave') {
+						var totalarmy = 0;
+						for (var fl in fleet) {
+							if (fl == 's1') { totalarmy += 5 * fleet[fl]; }
+							if (fl == 's3') { totalarmy += 2 * fleet[fl]; }
+						}
+						if (units['u3']) { // archers
+							oElement.form["form[u3]"].value = Math.min(totalarmy, units['u3']);
+							totalarmy -= Math.min(totalarmy, units['u3']);
+						}
+						if (units['u2']) { // spearfighters
+							oElement.form["form[u2]"].value = Math.min(totalarmy, units['u2']);
+							totalarmy -= Math.min(totalarmy, units['u2']);
+						}
+						if (units['u1']) { // stone throwers
+							oElement.form["form[u1]"].value = Math.min(totalarmy, units['u1']);
+							totalarmy -= Math.min(totalarmy, units['u1']);
+						}
+						updateUnitsResources(oElement.form);
+					}
+				}
+				
+				else if (oElement.type == 'hidden' && gup('sub') == 'presend') {
+					var a = oElement.name.match(/form\[(s\d)\]/);
+					if (a) {
+						if (hiddenrower == -1) {
+							for (var c = 0; c < cells.length; ++c) {
+								if (cells[c].innerText == 'Loading') {
+									hiddenrower = c-3;
+									break;
+								}
+							}
+						}
+						var newrow = tables[tables.length-1].insertRow(hiddenrower++);
+						newrow.insertCell(0).innerHTML = fullnames[a[1]];
+						newrow.insertCell(1).innerHTML = oElement.value;
+						fleet[a[1]] = oElement.value;
 					}
 				}
 			
