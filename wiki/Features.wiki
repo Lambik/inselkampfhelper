@@ -23,6 +23,8 @@
     * 'day' enters the amount you can build per day, or the max with your current resources, whichever is lowest
     * '+1', '+5' add 1 or 5 to the current amount
     * 'X' resets the form to 0 units
+  * On mail pages, when a match for xx:yy:zz is found, a link is created instead, for easy viewing.
+  * Added a button to the harbour page called "Fleetsave". It enters all ship amounts in the box, goes to island 1:1:1 (or if one is already entered by you, it uses that one), and Attacks. Then on the presend-attack page, it enters the right unit amounts automatically to save as many archers as possible, then spears, then stonies, and cats too of course.
 
 
 = TODO =
