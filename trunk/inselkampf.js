@@ -581,6 +581,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							document.forms[r].elements[0].value = Math.min(amountMax, amountDay);
 						};
 						par.appendChild(buttDay);
+						buttDay.click();
 
 						par.appendChild(document.createElement('br'));
 						
@@ -626,6 +627,14 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							totalarmy -= Math.min(totalarmy, units['u1']);
 						}
 						updateUnitsResources(oElement.form);
+					}
+					else if (oElement.value == 'Spy') {
+						oElement.onclick = function() {
+							if ((this.form["form[s1]"]?this.form["form[s1]"].value:0) + (this.form["form[s3]"]?this.form["form[s3]"].value:0) == 0) {
+								if (this.form["form[s3]"]) { this.form["form[s3]"].value = 1; }
+								else if (this.form["form[s1]"]) { this.form["form[s1]"].value = 1; }
+							}
+						}
 					}
 				}
 				
