@@ -242,7 +242,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							// select unseen and thus new events of transport to you automatically
 							// will not select already seen transports to you, because it assumes
 							// you want to keep them otherwise you'd have deleted them yourself
-							for (var r = 2; r < rows.length - 2; ++r) { // 2 to skip 'Events' and 'Island' rows, and bottom rows
+							for (var r = 2; r < rows.length - 1; ++r) { // 2 to skip 'Events' and 'Island' rows, and bottom rows
 								if (rows[r].children[1].children.length > 2 && rows[r].children[1].children[2].innerText == 'Transport to ' + playername) {
 									document.getElementById('events').elements[r-1].checked = true;
 								}
@@ -374,6 +374,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			// on mail page, find all matches to xx:yy:zz and replace them with links
 			if (gup('p') == 'mail' && gup('sub') == 'show') {
+				cells[4].innerHTML = cells[4].innerHTML.replace(/(\d+):(\d+):(\d+)/g, "<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=map&sub=isle&pos1=$1&pos2=$2&pos3=$3' target='_blank'>$1:$2:$3</a>");
 				cells[5].innerHTML = cells[5].innerHTML.replace(/(\d+):(\d+):(\d+)/g, "<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=map&sub=isle&pos1=$1&pos2=$2&pos3=$3' target='_blank'>$1:$2:$3</a>");
 			}
 			
