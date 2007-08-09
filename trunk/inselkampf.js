@@ -243,7 +243,7 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							// will not select already seen transports to you, because it assumes
 							// you want to keep them otherwise you'd have deleted them yourself
 							for (var r = 2; r < rows.length - 1; ++r) { // 2 to skip 'Events' and 'Island' rows, and bottom row(s)
-								if (rows[r].children.length == 2 && rows[r].children[1].children.length > 2 && rows[r].children[1].children[2].innerText == 'Transport to ' + playername) {
+								if (rows[r].children.length >= 2 && rows[r].children[1].children.length > 2 && rows[r].children[1].children[2].innerText == 'Transport to ' + playername) {
 									document.getElementById('events').elements[r-1].checked = true;
 								}
 							}
