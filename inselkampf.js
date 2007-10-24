@@ -143,7 +143,8 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			
 			// get player name
 			var playername = document.getElementsByTagName('b')[0].innerText;
-			
+			var activeIsland; // name will be set on visit to the List page
+			var prevIsland, nextIsland; // URL will be set on visit to List page (to island before/after this one, upon coming to end of list, nothing will be set; if it is the first island, no previous will be set)
 			
 			var tables = document.getElementsByTagName('table');
 			for ( var i = 0, oElement; oElement = tables[i]; ++i) {
@@ -177,6 +178,15 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 							for (var r = 1; r < rows.length; ++r) {
 								for (var k = 0; k < cells2sum.length; ++k) {
 									totalsisles[k] += parseInt(rows[r].children[cells2sum[k]].innerText);
+								}
+								if (activeIsland && !nextIsland) {
+									nextIsland = rows[r].children[0].children[0].href;
+								}
+								if (rows[r].style.backgroundColor == '#e0e0e0') {
+									activeIsland = rows[r].children[0].innerText;
+								}
+								if (!activeIsland) {
+									prevIsland = rows[r].children[0].children[0].href;
 								}
 							}
 							
@@ -252,7 +262,16 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 					}
 				}
 			}
-
+			
+			// jump to the previous island on the list page (only if there is a previous island)
+			if (gup('a') == 'prev' && prevIsland) {
+				document.location = prevIsland;
+			}
+			// jump to the next island on the list page (only if there is a next island)
+			if (gup('a') == 'next' && nextIsland) {
+				document.location = nextIsland;
+			}
+			
 			var cells = document.getElementsByTagName('td');
 			
 			//gather resources and duration of things and put them in arrays
@@ -868,6 +887,22 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 				document.body.appendChild(newDiv);
 			}
 			
+			
+			// add a menu for easier browsing
+			var msg = "<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=isles&a=prev'>&lt;&lt;</a>";
+			msg += "&nbsp;-&nbsp;<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=b1'>Main House</a>";
+			msg += "&nbsp;-&nbsp;<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=b5'>Laboratory</a>";
+			msg += "&nbsp;-&nbsp;<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=b6'>Barracks</a>";
+			msg += "&nbsp;-&nbsp;<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=b7'>Harbour</a>";
+			msg += "&nbsp;-&nbsp;<a href='http://213.203.194.123/us/1/index.php?s=" + gup('s') + "&p=isles&a=next'>&gt;&gt;</a>";
+			var theDIV = document.createElement('div');
+			theDIV.style.padding = '10px';
+			theDIV.style.paddingBottom = '0px';
+			
+			theDIV.innerHTML = msg;
+			pseudoInsertAfter(theDIV, tables[0]);
+			
+			
 			// start some clocks
 			if (startStoreClock) {
 				new Clock(timer, document.getElementById("goldin"), goldin);
@@ -915,6 +950,11 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			function hideElement(name) {
 				document.getElementById(name).style.display = 'none';
 			}
+			
+			function pseudoInsertAfter(newElement, reference) {
+				reference.parentNode.insertBefore(newElement,reference.nextSibling);
+			}
+			
 		},
 		false
 	);
