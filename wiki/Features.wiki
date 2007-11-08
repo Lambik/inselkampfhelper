@@ -26,7 +26,7 @@
   * On mail pages, when a match for xx:yy:zz is found, a link is created instead, for easy viewing.
   * Added a button to the harbour page called "Fleetsave". It enters all ship amounts in the box, goes to island 1:1:1 (or if one is already entered by you, it uses that one), and Attacks. Then on the presend-attack page, it enters the right unit amounts automatically to save as many archers as possible, then spears, then stonies, and cats too of course.
   * Clicking "Spy" button on harbour page automatically adds 1 sws if no lws and no sws # is entered. If no sws available, adds 1 lws.
-
+  * Added a new menubar at the top of the screen to the most important buildings. Also added "next" and "previous" links, to easily go to the next island in your list. Note that Sven can see that you use this feature in his server logs, if he ever bothers to check them.
 
 = TODO =
   * you tell me
