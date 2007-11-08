@@ -7,8 +7,9 @@ This script is only tested with Opera 9.10.
 
 = Details =
 
-  # Download the script from the SVN trunk (the Source tab).
+  # Download the script either from the Downloads tab, or get the (sometimes newer) version from the SVN trunk (the Source tab).
   # Move the script file to a directory of your choice, for example in the path of your Opera installation (eg: C:\Program Files\Opera\UserJS).
+  # Remove a previous version that might be there.
   # Open the Opera settings (menu Extra -> Preferences).
   # Go to the tab Advanced.
   # Select the Contents section.
