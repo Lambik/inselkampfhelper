@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This script is only tested with Opera 9.10.
+This script is only tested with Opera 9.24.
 
 
 = Details =
