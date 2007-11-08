@@ -264,12 +264,22 @@ if( location.hostname.indexOf('213.203.194.123') != -1 ) {
 			}
 			
 			// jump to the previous island on the list page (only if there is a previous island)
-			if (gup('a') == 'prev' && prevIsland) {
-				document.location = prevIsland;
+			if (gup('a') == 'prev') {
+				if (prevIsland) {
+					window.location = prevIsland;
+				}
+				else { // clean exit for opera's autorefresh page
+					window.location = window.location.protocol + '//' + window.location.hostname + window.location.pathname + '?s=' + gup('s') + '&p=isles';
+				}
 			}
 			// jump to the next island on the list page (only if there is a next island)
-			if (gup('a') == 'next' && nextIsland) {
-				document.location = nextIsland;
+			if (gup('a') == 'next') {
+				if (nextIsland) {
+					window.location = nextIsland;
+				}
+				else { // clean exit for opera's autorefresh page
+					window.location = window.location.protocol + '//' + window.location.hostname + window.location.pathname + '?s=' + gup('s') + '&p=isles';
+				}
 			}
 			
 			var cells = document.getElementsByTagName('td');
